@@ -126,7 +126,7 @@ public class EditContactView extends LinearLayout
         mFirstName.setOnClickListner(new OnClickListner() {
             public void onClick(View v) {
                 mEditContactPresenter.onHandle(
-                            BoardSearchSuggestionPresenter.KEYWORD_SELECTED, keywordSuggestion);
+                            EditContactPresenter.KEYWORD_SELECTED, keywordSuggestion);
             }
         });
         
