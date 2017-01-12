@@ -51,25 +51,17 @@ public interface BaseView<T extends BasePresenter> {
 ```
 #### Concrete MPV impl : BoardSearchSuggestion
 ```java
-public class BoardSearchSuggestionView extends LinearLayout
-        implements BaseView<BoardSearchSuggestionPresenter> {
+public class EditContactView extends LinearLayout
+        implements BaseView<EditContactPresenter> {
 
-    @BindView(R.id.title) BrioTextView _title;
-    @BindView(R.id.board_suggestion_recycler) RecyclerView _recyclerView;
+    @BindView(R.id.first_name) EditView mFirstName;
+    @BindView(R.id.last_name) EditView mLastName;
+    @BindView(R.id.phone) EditView mPhone;
+    @BindView(R.id.submit) Button mSubmit;
     
-    private BoardSearchSuggestionPresenter _boardSearchSuggestionPresenter;
-    private BoardSearchSuggestionAdapter _adapter;
+    private EditContactPresenter mEditContactPresenter;
 
-    private BoardSearchSuggestionAdapter.OnItemClickListener _onItemClickListener =
-            new OnItemClickListener() {
-                @Override
-                public void onItemClick(KeywordSuggestion keywordSuggestion) {
-                    _boardSearchSuggestionPresenter.onHandle(
-                            BoardSearchSuggestionPresenter.KEYWORD_SELECTED, keywordSuggestion);
-                }
-            };
-
-    public BoardSearchSuggestionView(Context context) {
+    public EditContactView(Context context) {
         super(context);
     }
 
@@ -77,63 +69,70 @@ public class BoardSearchSuggestionView extends LinearLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this);
-
-        _layoutManager = new LinearLayoutManager(context);
-
-        _adapter = new BoardSearchSuggestionAdapter(context, _colors, _onItemClickListener);
-        _recyclerView.setAdapter(_adapter);
         ...
     }
 
     @Override
-    public void setPresenter(@NotNull BoardSearchSuggestionPresenter presenter) {
-        _boardSearchSuggestionPresenter = presenter;
+    public void setPresenter(@NotNull EditContactPresenter presenter) {
+        mEditContactPresenter = presenter;
     }
 
-    public void bindContent(BoardSearchSuggestionData data) {
-        setTitle(data.getTitle());
-        _adapter.setItems(data.getKeywordSuggestions());
-    }
-
-    private void setTitle(String title) {
-        _title.setText(title);
+    public void bindContent(Contact contact) {
+        mFirstName.setText(contact.firstName);
+        mFirstName.setOnClickListner(new OnClickListner() {
+            public void onClick(View v) {
+                mEditContactPresenter.onHandle(
+                            BoardSearchSuggestionPresenter.KEYWORD_SELECTED, keywordSuggestion);
+            }
+        });
+        mLastName.setText(contact.lastName);
+        mPhone.setText(contact.phone);
+        
+        mSubmit..setOnClickListner(new OnClickListner() {
+            public void onClick(View v) {
+                Contact contact = getNewInfo()
+                mEditContactPresenter.onHandle(
+                            EditContactPresenter.ON_SUBMIT, contact);
+            }
+        });
     }
 }
 ```
 
 ```java
-public class BoardSearchSuggestionPresenter implements BasePresenter {
+public class EditContactPresenter implements BasePresenter {
 
-    private BoardSearchSuggestionView _boardSearchSuggestionView;
-    private BoardSearchSuggestionData _boardSearchSuggestionData;
+    @IntDef({ON_EDIT_PHONE, ON_SUBMIT, ...})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface EventType{}
+    
+    private EditContactView mEditContactView;
+    private Contact mContact;
 
-    public BoardSearchSuggestionPresenter(
-            @NonNull BoardSearchSuggestionView boardSearchSuggestionView,
-            @NonNull BoardSearchSuggestionData boardSearchSuggestionData) {
-        _boardSearchSuggestionView = boardSearchSuggestionView;
-        _boardSearchSuggestionData = boardSearchSuggestionData;
+    public EditContactPresenter( @NonNull EditContactView editContactView, @NonNull Contact contact) {
+        mEditContactView = editContactView;
+        mContact = contact;
     }
 
     @Override
     public void present() {
-        _boardSearchSuggestionView.bindContent(_boardSearchSuggestionData);
+        editContactView.bindContent(mContact);
     }
 
     @Override
     public void clean() {
-        _boardSearchSuggestionView.unbind();
+        editContactView.unbind();
     }
 
     @Override
-    public void onHandle(int event, Object... params) {
-        if (event == KEYWORD_SELECTED) {
-            KeywordSuggestion keywordSuggestion = (KeywordSuggestion) params[0];
-            handleKeywordSelected(keywordSuggestion);
+    public void onHandle(@EventType int event, Object... params) {
+        if (event == ON_EDIT_PHONE) {
+            String keyword = (String) params[0];
+            ...
+        } else if (event == ON_SUBMIT) {
+            Contact contact = (Contact) params[0];
+            ...
         }
-    }
-
-    private void handleKeywordSelected(KeywordSuggestion keywordSuggestion) {
-        ...
     }
 }
 ```
