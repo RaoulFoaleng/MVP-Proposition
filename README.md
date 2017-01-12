@@ -25,7 +25,7 @@ public interface BasePresenter {
     void clean();
 
     /**
-     * Handle all events coming from {@link BaseView}. This is not a require, but here we 
+     * Handle all UI events coming from {@link BaseView}. This is not a require, but here we 
      * decided to define a generic function which will handle all event coming from the BaseView
      * @param event : the event type
      * @param params : the event parameters
