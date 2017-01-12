@@ -82,22 +82,28 @@ public class EditContactView extends LinearLayout
 
     public void bindContent(Contact contact) {
         mFirstName.setText(contact.firstName);
+        mLastName.setText(contact.lastName);
+        mPhone.setText(contact.phone);
+        
         mFirstName.setOnClickListner(new OnClickListner() {
             public void onClick(View v) {
                 mEditContactPresenter.onHandle(
                             BoardSearchSuggestionPresenter.KEYWORD_SELECTED, keywordSuggestion);
             }
         });
-        mLastName.setText(contact.lastName);
-        mPhone.setText(contact.phone);
         
-        mSubmit..setOnClickListner(new OnClickListner() {
+        mSubmit.setOnClickListner(new OnClickListner() {
             public void onClick(View v) {
                 Contact contact = getNewInfo()
                 mEditContactPresenter.onHandle(
                             EditContactPresenter.ON_SUBMIT, contact);
             }
         });
+    }
+    
+    public void unbind() {
+        mFirstName.setOnClickListner(null);
+        mSubmit.setOnClickListner(null);
     }
 }
 ```
