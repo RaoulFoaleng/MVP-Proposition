@@ -56,7 +56,7 @@ public interface BaseView<T extends BasePresenter> {
 ```java
 public class EditContactPresenter implements BasePresenter {
 
-    @IntDef({ON_EDIT_PHONE, ON_SUBMIT, ...})
+    @IntDef({ON_EDITING_PHONE, ON_SUBMIT, ...})
     @Retention(RetentionPolicy.SOURCE)
     public @interface EventType{}
     
@@ -127,7 +127,7 @@ public class EditContactView extends LinearLayout
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mEditContactPresenter.onHandle(
-                            EditContactPresenter.ON_EDIT_PHONE, s);
+                            EditContactPresenter.ON_EDITING_PHONE, s);
             }
         });
         
