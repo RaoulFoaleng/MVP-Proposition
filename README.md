@@ -127,7 +127,7 @@ public class EditContactView extends LinearLayout
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mEditContactPresenter.onHandle(
-                            EditContactPresenter.ON_EDIT_PHONE, null);
+                            EditContactPresenter.ON_EDIT_PHONE, s);
             }
         });
         
