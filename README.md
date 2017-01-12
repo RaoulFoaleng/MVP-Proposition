@@ -1,10 +1,11 @@
 # MVP-Proposition
 MVP proposition base on https://github.com/googlesamples/android-architecture
 
-# H2 Summary :
+## Summary :
 Here a detail concrete implementation base on Android-architecture (https://github.com/googlesamples/android-architecture) 
 
-# H4 Base Class :
+#### Base Class :
+We define a basic **Presenter** and **View** which will be extend by concrete MPV implementation
 
 ```java
 /***
@@ -46,5 +47,93 @@ public interface BaseView<T extends BasePresenter> {
      * @param presenter
      */
     void setPresenter(T presenter);
+}
+```
+#### Concrete MPV impl : BoardSearchSuggestion
+```java
+public class BoardSearchSuggestionView extends LinearLayout
+        implements BaseView<BoardSearchSuggestionPresenter> {
+
+    @BindView(R.id.title) BrioTextView _title;
+    @BindView(R.id.board_suggestion_recycler) RecyclerView _recyclerView;
+    
+    private BoardSearchSuggestionPresenter _boardSearchSuggestionPresenter;
+    private BoardSearchSuggestionAdapter _adapter;
+
+    private BoardSearchSuggestionAdapter.OnItemClickListener _onItemClickListener =
+            new OnItemClickListener() {
+                @Override
+                public void onItemClick(KeywordSuggestion keywordSuggestion) {
+                    _boardSearchSuggestionPresenter.onHandle(
+                            BoardSearchSuggestionPresenter.KEYWORD_SELECTED, keywordSuggestion);
+                }
+            };
+
+    public BoardSearchSuggestionView(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.bind(this);
+
+        _layoutManager = new LinearLayoutManager(context);
+
+        _adapter = new BoardSearchSuggestionAdapter(context, _colors, _onItemClickListener);
+        _recyclerView.setAdapter(_adapter);
+        ...
+    }
+
+    @Override
+    public void setPresenter(@NotNull BoardSearchSuggestionPresenter presenter) {
+        _boardSearchSuggestionPresenter = presenter;
+    }
+
+    public void bindContent(BoardSearchSuggestionData data) {
+        setTitle(data.getTitle());
+        _adapter.setItems(data.getKeywordSuggestions());
+    }
+
+    private void setTitle(String title) {
+        _title.setText(title);
+    }
+}
+```
+
+```java
+public class BoardSearchSuggestionPresenter implements BasePresenter {
+
+    private BoardSearchSuggestionView _boardSearchSuggestionView;
+    private BoardSearchSuggestionData _boardSearchSuggestionData;
+
+    public BoardSearchSuggestionPresenter(
+            @NonNull BoardSearchSuggestionView boardSearchSuggestionView,
+            @NonNull BoardSearchSuggestionData boardSearchSuggestionData) {
+        _boardSearchSuggestionView = boardSearchSuggestionView;
+        _boardSearchSuggestionData = boardSearchSuggestionData;
+    }
+
+    @Override
+    public void present() {
+        _boardSearchSuggestionView.bindContent(_boardSearchSuggestionData);
+    }
+
+    @Override
+    public void clean() {
+        _boardSearchSuggestionView.unbind();
+    }
+
+    @Override
+    public void onHandle(int event, Object... params) {
+        if (event == KEYWORD_SELECTED) {
+            KeywordSuggestion keywordSuggestion = (KeywordSuggestion) params[0];
+            handleKeywordSelected(keywordSuggestion);
+        }
+    }
+
+    private void handleKeywordSelected(KeywordSuggestion keywordSuggestion) {
+        ...
+    }
 }
 ```
