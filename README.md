@@ -113,7 +113,7 @@ public class EditContactPresenter implements BasePresenter {
         mEditContactView = editContactView;
         mContact = contact;
     }
-
+ 
     @Override
     public void present() {
         editContactView.bindContent(mContact);
