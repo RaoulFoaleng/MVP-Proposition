@@ -25,7 +25,8 @@ public interface BasePresenter {
     void clean();
 
     /**
-     * Handle all events coming from {@link BaseView}
+     * Handle all events coming from {@link BaseView}. Not a require but here we decided to define 
+     * on generic function which will handle all event coming from the BaseView
      * @param event : the event type
      * @param params : the event parameters
      */
@@ -49,7 +50,9 @@ public interface BaseView<T extends BasePresenter> {
     void setPresenter(T presenter);
 }
 ```
-#### Concrete MPV impl : BoardSearchSuggestion
+
+#### Concrete MPV impl : EditContact
+
 ```java
 public class EditContactView extends LinearLayout
         implements BaseView<EditContactPresenter> {
