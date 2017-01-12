@@ -54,6 +54,44 @@ public interface BaseView<T extends BasePresenter> {
 #### Concrete MPV impl : EditContact
 
 ```java
+public class EditContactPresenter implements BasePresenter {
+
+    @IntDef({ON_EDIT_PHONE, ON_SUBMIT, ...})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface EventType{}
+    
+    private EditContactView mEditContactView;
+    private Contact mContact;
+
+    public EditContactPresenter( @NonNull EditContactView editContactView, @NonNull Contact contact) {
+        mEditContactView = editContactView;
+        mContact = contact;
+    }
+ 
+    @Override
+    public void present() {
+        editContactView.bindContent(mContact);
+    }
+
+    @Override
+    public void clean() {
+        editContactView.unbind();
+    }
+
+    @Override
+    public void onHandle(@EventType int event, Object... params) {
+        if (event == ON_EDIT_PHONE) {
+            String keyword = (String) params[0];
+            ...
+        } else if (event == ON_SUBMIT) {
+            Contact contact = (Contact) params[0];
+            ...
+        }
+    }
+}
+```
+
+```java
 public class EditContactView extends LinearLayout
         implements BaseView<EditContactPresenter> {
 
@@ -104,44 +142,6 @@ public class EditContactView extends LinearLayout
     public void unbind() {
         mFirstName.setOnClickListner(null);
         mSubmit.setOnClickListner(null);
-    }
-}
-```
-
-```java
-public class EditContactPresenter implements BasePresenter {
-
-    @IntDef({ON_EDIT_PHONE, ON_SUBMIT, ...})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface EventType{}
-    
-    private EditContactView mEditContactView;
-    private Contact mContact;
-
-    public EditContactPresenter( @NonNull EditContactView editContactView, @NonNull Contact contact) {
-        mEditContactView = editContactView;
-        mContact = contact;
-    }
- 
-    @Override
-    public void present() {
-        editContactView.bindContent(mContact);
-    }
-
-    @Override
-    public void clean() {
-        editContactView.unbind();
-    }
-
-    @Override
-    public void onHandle(@EventType int event, Object... params) {
-        if (event == ON_EDIT_PHONE) {
-            String keyword = (String) params[0];
-            ...
-        } else if (event == ON_SUBMIT) {
-            Contact contact = (Contact) params[0];
-            ...
-        }
     }
 }
 ```
