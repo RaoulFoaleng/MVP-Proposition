@@ -123,10 +123,11 @@ public class EditContactView extends LinearLayout
         mLastName.setText(contact.lastName);
         mPhone.setText(contact.phone);
         
-        mFirstName.setOnClickListner(new OnClickListner() {
-            public void onClick(View v) {
+        mFirstName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mEditContactPresenter.onHandle(
-                            EditContactPresenter.KEYWORD_SELECTED, keywordSuggestion);
+                            EditContactPresenter.ON_EDIT_PHONE, null);
             }
         });
         
